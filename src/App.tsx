@@ -16,7 +16,7 @@ import {BookOpen, Home} from "lucide-react";
 import {Layout} from "@/components/refine-ui/layout/layout.tsx";
 import SubjectsList from "@/pages/subjects/list.tsx";
 import SubjectsCreate from "@/pages/subjects/create.tsx";
-import {dataProvider} from "@/provider/data.ts";
+import {dataProvider} from "@/providers/data.ts";
 
 function App() {
     return (
