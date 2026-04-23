@@ -18,7 +18,7 @@ type RefreshButtonProps = {
    */
   recordItemId?: BaseKey;
   /**
-   * Target data provider name for API call to be made
+   * Target data providers name for API call to be made
    * @default `"default"`
    */
   dataProviderName?: string;

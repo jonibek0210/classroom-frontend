@@ -1,5 +1,4 @@
 import {ListView} from "@/components/refine-ui/views/list-view.tsx";
-import {Breadcrumb} from "@/components/ui/breadcrumb.tsx";
 import {Search} from "lucide-react";
 import {Input} from "@/components/ui/input.tsx";
 import {useMemo, useState} from "react";
@@ -11,6 +10,7 @@ import {useTable} from "@refinedev/react-table";
 import {Subject} from "@/types";
 import {ColumnDef} from "@tanstack/react-table";
 import {Badge} from "@/components/ui/badge.tsx";
+import {Breadcrumb} from "@/components/refine-ui/layout/breadcrumb.tsx";
 
 const SubjectsList = () => {
     const [searchQuery, setSearchQuery] = useState("")
@@ -23,60 +23,60 @@ const SubjectsList = () => {
             value: selectedDepartment,
         }
     ]
-    const searchFilters = searchQuery === "all" ? [
+
+    const searchFilters = searchQuery ? [
         {field: "name", operator: "contains" as const, value: searchQuery},
     ] : []
 
-    const subjectTable = useTable<Subject>({
-        columns: useMemo<ColumnDef<Subject>[]>(() => [
-            {
-                id: "code",
-                accessorKey: "code",
-                size: 100,
-                header: () => <p className={"column-title ml-2"}>Code</p>,
-                cell: ({getValue}) => <Badge>{getValue<string>()}</Badge>
-            },
-            {
-                id: "name",
-                accessorKey: "name",
-                size: 200,
-                header: () => <p className={"column-title"}>Name</p>,
-                cell: ({getValue}) => <span className={"text-foreground"}>{getValue<string>()}</span>,
-                filterFn: "includesString"
-            },
-            {
-                id: "department",
-                accessorKey: "department",
-                size: 150,
-                header: () => <p className={"column-title"}>Department</p>,
-                cell: ({getValue}) => <Badge variant={"secondary"}>{getValue<string>()}</Badge>,
-            },
-            {
-                id: "description",
-                accessorKey: "description",
-                size: 300,
-                header: () => <p className={"column-title"}>Description</p>,
-                cell: ({getValue}) => <span className={"truncate"}>
+    const subjectColumns = useMemo<ColumnDef<Subject>[]>(() => [
+        {
+            id: "code",
+            accessorKey: "code",
+            size: 100,
+            header: () => <p className={"column-title ml-2"}>Code</p>,
+            cell: ({getValue}) => <Badge>{getValue<string>()}</Badge>
+        },
+        {
+            id: "name",
+            accessorKey: "name",
+            size: 200,
+            header: () => <p className={"column-title"}>Name</p>,
+            cell: ({getValue}) => <span className={"text-foreground"}>{getValue<string>()}</span>,
+            filterFn: "includesString"
+        },
+        {
+            id: "department",
+            accessorKey: 'department.name',
+            size: 150,
+            header: () => <p className={"column-title"}>Department</p>,
+            cell: ({getValue}) => <Badge variant={"secondary"}>{getValue<string>()}</Badge>,
+        },
+        {
+            id: "description",
+            accessorKey: "description",
+            size: 300,
+            header: () => <p className={"column-title"}>Description</p>,
+            cell: ({getValue}) => <span className={"truncate"}>
                     {getValue<string>()}
                 </span>
-            }
-        ], []),
+        }
+    ], [])
+
+    const subjectTable = useTable<Subject>({
+        columns: subjectColumns,
         refineCoreProps: {
-            resource: "subjects",
-            pagination: {pageSize: 10, mode: "server"},
+            resource: 'subjects',
+            pagination: {pageSize: 10, mode: 'server'},
             filters: {
-                permanent: [...departmentFilters]
+                permanent: [...departmentFilters, ...searchFilters]
             },
             sorters: {
                 initial: [
-                    {
-                        field: "id",
-                        order: "desc"
-                    }
+                    {field: 'id', order: 'desc'},
                 ]
-            }
+            },
         }
-    })
+    });
 
     return (
         <ListView>
